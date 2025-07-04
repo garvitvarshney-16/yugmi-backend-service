@@ -36,6 +36,7 @@ class ProjectController {
     try {
       const { page = 1, limit = 10, status } = req.query;
       const offset = (page - 1) * limit;
+      console.log(req.user.userType);
 
       const whereClause = {};
       if (req.user.userType === 'organization') {
@@ -55,6 +56,10 @@ class ProjectController {
         offset: parseInt(offset),
         order: [['createdAt', 'DESC']]
       });
+
+      console.log(projects)
+
+
 
       res.json({
         success: true,
@@ -78,19 +83,20 @@ class ProjectController {
     }
   }
 
+  // Route should be: GET /api/projects/:ProjectId
   async getProjectById(req, res) {
     try {
-      const { id } = req.params;
+      const { ProjectId } = req.params;
 
       const project = await Project.findOne({
-        where: { 
-          id,
+        where: {
+          ProjectId,
           ...(req.user.userType === 'organization' && { organizationId: req.user.organizationId })
         },
         include: [
           { model: Organization, as: 'organization' },
-          { 
-            model: Site, 
+          {
+            model: Site,
             as: 'sites',
             include: [
               { model: User, as: 'authorizedUsers' }
@@ -108,7 +114,7 @@ class ProjectController {
 
       res.json({
         success: true,
-        data: { project }
+        data: { project }  // not "projects" as your response shows
       });
     } catch (error) {
       logger.error('Get project by ID failed:', error);
@@ -120,14 +126,15 @@ class ProjectController {
     }
   }
 
+
   async updateProject(req, res) {
     try {
-      const { id } = req.params;
+      const { ProjectId } = req.params;
       const updates = req.body;
 
       const project = await Project.findOne({
-        where: { 
-          id,
+        where: {
+          ProjectId,
           ...(req.user.userType === 'organization' && { organizationId: req.user.organizationId })
         }
       });
@@ -158,11 +165,11 @@ class ProjectController {
 
   async deleteProject(req, res) {
     try {
-      const { id } = req.params;
+      const { ProjectId } = req.params;
 
       const project = await Project.findOne({
-        where: { 
-          id,
+        where: {
+          ProjectId,
           ...(req.user.userType === 'organization' && { organizationId: req.user.organizationId })
         }
       });
@@ -175,7 +182,7 @@ class ProjectController {
       }
 
       // Check if project has sites
-      const sitesCount = await Site.count({ where: { projectId: id } });
+      const sitesCount = await Site.count({ where: { projectId: ProjectId } });
       if (sitesCount > 0) {
         return res.status(400).json({
           success: false,

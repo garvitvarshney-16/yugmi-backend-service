@@ -3,6 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
+const swaggerConfig = require('../swagger');
 require('dotenv').config();
 
 const { sequelize } = require('./models');
@@ -17,10 +18,13 @@ const captureRoutes = require('./routes/captures');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Swagger Docs
+app.use('/api-docs', swaggerConfig.serve, swaggerConfig.setup);
+
 // Security middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3001'],
+  origin: process.env.ALLOWED_ORIGINS || 'http://localhost:8080',
   credentials: true
 }));
 

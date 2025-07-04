@@ -6,7 +6,7 @@ const authenticateToken = async (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
-    console.log(token)
+    // console.log(token)
 
     if (!token) {
       return res.status(401).json({ success: false, message: 'Access token required' });
@@ -14,7 +14,7 @@ const authenticateToken = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
 
-    console.log(decoded)
+    // console.log(decoded)
     const user = await User.findByPk(decoded.userId, {
       include: [
         { model: Organization, as: 'organization' },
@@ -22,7 +22,7 @@ const authenticateToken = async (req, res, next) => {
       ]
     });
 
-    console.log(user)
+    // console.log(user)
 
     if (!user || !user.isActive) {
       return res.status(401).json({

@@ -68,7 +68,7 @@ class CaptureController {
       }
 
       // Trigger AI analysis asynchronously
-      await this.processAIAnalysis(capture.CaptureId, s3Url, site.operationType, wbsId);
+      // await this.processAIAnalysis(capture.CaptureId, s3Url, site.operationType, wbsId);
 
       res.status(201).json({
         success: true,
@@ -85,35 +85,7 @@ class CaptureController {
     }
   }
 
-  async processAIAnalysis(captureId, mediaUrl, operationType, wbsId = null) {
-    try {
-      await Capture.update(
-        { processingStatus: 'processing' },
-        { where: { CaptureId: captureId } },
-      );
-
-      const aiAnalysis = await aiService.analyzeImage(mediaUrl, operationType, null, wbsId);
-
-      await Capture.update(
-        {
-          aiAnalysis,
-          processingStatus: 'completed',
-        },
-        { where: { CaptureId: captureId } },
-      );
-
-      logger.info(`AI analysis completed for capture ${captureId}`);
-    } catch (error) {
-      logger.error(`AI analysis failed for capture ${captureId}:`, error);
-      await Capture.update(
-        { processingStatus: 'failed' },
-        { where: { CaptureId: captureId } },
-      );
-    }
-  }
-
-  // async processAIAnalysis(req, res) {
-  //   const { captureId, mediaUrl, operationType, wbsId } = req.body
+  // async processAIAnalysis(captureId, mediaUrl, operationType, wbsId = null) {
   //   try {
   //     await Capture.update(
   //       { processingStatus: 'processing' },
@@ -121,8 +93,6 @@ class CaptureController {
   //     );
 
   //     const aiAnalysis = await aiService.analyzeImage(mediaUrl, operationType, null, wbsId);
-
-  //     console.log(aiAnalysis)
 
   //     await Capture.update(
   //       {
@@ -133,18 +103,48 @@ class CaptureController {
   //     );
 
   //     logger.info(`AI analysis completed for capture ${captureId}`);
-  //     res.status(201).json({
-  //       success: true,
-  //       message: 'Analysis successfully',
-  //       data: { aiAnalysis },
-  //     });
   //   } catch (error) {
+  //     logger.error(`AI analysis failed for capture ${captureId}:`, error);
   //     await Capture.update(
   //       { processingStatus: 'failed' },
   //       { where: { CaptureId: captureId } },
   //     );
   //   }
   // }
+
+  async processAIAnalysis(req, res) {
+    const { captureId, mediaUrl, operationType, wbsId } = req.body
+    try {
+      await Capture.update(
+        { processingStatus: 'processing' },
+        { where: { CaptureId: captureId } },
+      );
+
+      const aiAnalysis = await aiService.analyzeImage(mediaUrl, operationType, null, wbsId);
+
+      console.log(aiAnalysis)
+
+      await Capture.update(
+        {
+          aiAnalysis,
+          processingStatus: 'completed',
+        },
+        { where: { CaptureId: captureId } },
+      );
+
+      logger.info(`AI analysis completed for capture ${captureId}`);
+      res.status(201).json({
+        success: true,
+        message: 'Analysis successfully',
+        data: { aiAnalysis },
+      });
+    } catch (error) {
+      await Capture.update(
+        { processingStatus: 'failed' },
+        { where: { CaptureId: captureId } },
+      );
+    }
+  }
 
   async getCaptures(req, res) {
     try {
