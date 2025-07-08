@@ -194,10 +194,10 @@ router.get('/',
  *       404:
  *         description: Site not found
  */
-router.get('/:id', 
+router.get('/:SiteId',
   authenticateToken, 
   requirePermission('canViewSite'), 
-  validateUUIDParam('id'), 
+  validateUUIDParam('SiteId'), 
   siteController.getSiteById
 );
 

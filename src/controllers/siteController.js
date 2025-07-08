@@ -122,9 +122,9 @@ class SiteController {
 
   async getSiteById(req, res) {
     try {
-      const { id } = req.params;
+      const { SiteId } = req.params;
 
-      let whereClause = { id };
+      let whereClause = { SiteId };
       let include = [
         { 
           model: Project, 

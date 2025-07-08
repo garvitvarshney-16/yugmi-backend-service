@@ -218,7 +218,7 @@ router.get('/:id',
 );
 
 
-router.post('/analysis', captureController.processAIAnalysis);
+router.post('/analysis', authenticateToken, captureController.processAIAnalysis);
 
 
 /**

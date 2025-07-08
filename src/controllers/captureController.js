@@ -151,7 +151,7 @@ class CaptureController {
       const { page = 1, limit = 10, siteId, mediaType, processingStatus } = req.query;
       const offset = (page - 1) * limit;
 
-      let whereClause = { userId: req.user.id };
+      let whereClause = { userId: req.user.UserId };
 
       if (siteId) {
         whereClause.siteId = siteId;
