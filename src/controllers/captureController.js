@@ -153,23 +153,23 @@ class CaptureController {
 
       let whereClause = { userId: req.user.UserId };
 
-      if (siteId) {
-        whereClause.siteId = siteId;
-      }
+      // if (siteId) {
+      //   whereClause.siteId = siteId;
+      // }
       if (mediaType) {
         whereClause.mediaType = mediaType;
       }
-      if (processingStatus) {
-        whereClause.processingStatus = processingStatus;
-      }
+      // if (processingStatus) {
+      //   whereClause.processingStatus = processingStatus;
+      // }
 
       const { count, rows: captures } = await Capture.findAndCountAll({
         where: whereClause,
-        include: [
-          { model: Site, as: 'site' },
-          { model: User, as: 'user' },
-          { model: Annotation, as: 'annotations' },
-        ],
+        // include: [
+        //   { model: Site, as: 'site' },
+        //   { model: User, as: 'user' },
+        //   { model: Annotation, as: 'annotations' },
+        // ],
         limit: parseInt(limit),
         offset: parseInt(offset),
         order: [['createdAt', 'DESC']],
