@@ -20,12 +20,12 @@ const options = {
     servers: [
       {
         url: 'http://localhost:3000',
-        description: 'Development server'
+        description: 'Development server (localhost)'
       },
       {
-        url: 'https://api.constructionmonitoring.com',
-        description: 'Production server'
-      }
+        url: 'http://192.168.1.10:3000',
+        description: 'Development server (local network)'
+      },
     ],
     components: {
       securitySchemes: {
