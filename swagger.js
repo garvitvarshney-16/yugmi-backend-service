@@ -26,6 +26,10 @@ const options = {
         url: 'http://192.168.1.10:3000',
         description: 'Development server (local network)'
       },
+      {
+        url: 'https://yugmi-node-backend-493238193695.us-central1.run.app',
+        description: 'Production server (Cloud network)'
+      },
     ],
     components: {
       securitySchemes: {
