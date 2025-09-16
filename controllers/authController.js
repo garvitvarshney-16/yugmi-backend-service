@@ -168,7 +168,7 @@ class AuthController {
     const accessToken = jwt.sign(
       { userId },
       process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: process.env.JWT_EXPIRES_IN || '15m' }
+      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
 
     const refreshToken = jwt.sign(

@@ -218,13 +218,16 @@ class CaptureController {
       const { id } = req.params;
 
       const capture = await Capture.findOne({
-        where: { id, userId: req.user.id },
+        where: { CaptureId: id, userId: req.user.UserId },
         include: [
           { model: Site, as: 'site' },
           { model: User, as: 'user' },
           { model: Annotation, as: 'annotations' },
         ],
       });
+
+      console.log(capture);
+
 
       if (!capture) {
         return res.status(404).json({
@@ -264,7 +267,7 @@ class CaptureController {
       const { customPrompt } = req.body;
 
       const capture = await Capture.findOne({
-        where: { id, userId: req.user.id },
+        where: { CaptureId: id, userId: req.user.UserId },
         include: [{ model: Site, as: 'site' }],
       });
 
@@ -278,7 +281,7 @@ class CaptureController {
       // Trigger AI analysis with custom prompt
       await Capture.update(
         { processingStatus: 'processing' },
-        { where: { id } },
+        { where: { CaptureId: id } },
       );
 
       const aiAnalysis = await aiService.analyzeImage(
@@ -319,7 +322,7 @@ class CaptureController {
       const { method, recipient } = req.body; // method: 'email' or 'whatsapp'
 
       const capture = await Capture.findOne({
-        where: { id, userId: req.user.id },
+        where: { CaptureId: id, userId: req.user.UserId },
         include: [
           { model: Site, as: 'site' },
           { model: User, as: 'user' },
@@ -389,7 +392,7 @@ class CaptureController {
       const { type, coordinates, label, measurement, color, strokeWidth, notes } = req.body;
 
       const capture = await Capture.findOne({
-        where: { id, userId: req.user.id },
+        where: { CaptureId: id, userId: req.user.UserId },
       });
 
       if (!capture) {
