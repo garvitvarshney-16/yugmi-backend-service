@@ -45,11 +45,10 @@ const authenticateToken = async (req, res, next) => {
 const requirePermission = (permission) => {
   return (req, res, next) => {
     if (req.user.userType === 'individual') {
-      const individualPermissions = ['canCapture', 'canAnnotate', 'canViewCaptures', 'canShareCaptures'];
-      if (individualPermissions.includes(permission)) return next();
+      return next(); // Allow all actions for individual users
     } else if (req.user.role && req.user.role.permissions[permission]) {
       return next();
-    }
+    } 
 
     return res.status(403).json({
       success: false,

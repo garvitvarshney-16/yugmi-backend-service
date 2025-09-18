@@ -39,7 +39,9 @@ class ProjectController {
       console.log(req.user.userType);
 
       const whereClause = {};
-      if (req.user.userType === 'organization') {
+      if (req.user.userType === 'individual') {
+        whereClause.userId = req.user.UserId;
+      } else {
         whereClause.organizationId = req.user.organizationId;
       }
       if (status) {

@@ -62,13 +62,55 @@ class AuthController {
         roleId: adminRole.RoleId // ✅ Make sure you're using the primary key
       });
     } else {
+      organization = await Organization.create({
+        name: firstName,
+        email: email,
+        phone: '1111111111',
+        address: ''
+      });
+
+      const adminRole = await Role.create({
+        name: 'Individual Admin',
+        organizationId: organization.OrganizationId, // ✅ Correct field
+        permissions: {
+          canCreateProject: true,
+          canUpdateProject: true,
+          canDeleteProject: true,
+          canViewProject: true,
+          canCreateSite: true,
+          canUpdateSite: true,
+          canDeleteSite: true,
+          canViewSite: true,
+          canCapture: true,
+          canAnnotate: true,
+          canViewCaptures: true,
+          canCreateReport: true,
+          canViewReport: true,
+          canShareCaptures: true,
+          canManageUsers: true
+        },
+        scope: {
+          projectIds: ['*'],
+          siteIds: ['*']
+        }
+      });
+
       user = await User.create({
         email,
         password,
         firstName,
         lastName,
-        userType
+        userType,
+        organizationId: organization.OrganizationId, // ✅ Correct field
+        roleId: adminRole.RoleId // ✅ Make sure you're using the primary key
       });
+      // user = await User.create({
+      //   email,
+      //   password,
+      //   firstName,
+      //   lastName,
+      //   userType
+      // });
     }
 
     const tokens = AuthController.generateTokens(user.UserId);
