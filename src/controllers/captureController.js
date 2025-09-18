@@ -427,6 +427,72 @@ class CaptureController {
       });
     }
   }
+
+  async getCapturesByProjectOrSite(req, res) {
+    try {
+      const { projectId, siteId } = req.query;
+      let sites = [];
+      let whereClause = { userId: req.user.UserId };
+
+      if (projectId) {
+        // Get all sites for the project
+        sites = await Site.findAll({ where: { projectId } });
+        if (sites.length === 0) {
+          return res.status(404).json({
+            success: false,
+            message: 'No sites found for this project',
+          });
+        }
+        const siteIds = sites.map(site => site.SiteId);
+        whereClause.siteId = siteIds;
+      } else if (siteId) {
+        whereClause.siteId = siteId;
+      } else {
+        return res.status(400).json({
+          success: false,
+          message: 'Either projectId or siteId must be provided',
+        });
+      }
+
+      const captures = await Capture.findAll({
+        where: whereClause,
+        include: [
+          { model: Site, as: 'site' },
+          { model: User, as: 'user' },
+          { model: Annotation, as: 'annotations' },
+        ],
+        order: [['createdAt', 'DESC']],
+      });
+
+      // Generate signed URLs for media access
+      const capturesWithSignedUrls = await Promise.all(
+        captures.map(async (capture) => {
+          const captureData = capture.toJSON();
+          if (capture.s3Url) {
+            const key = storageService.extractKeyFromUrl(capture.s3Url);
+            captureData.signedUrl = await storageService.generateSignedUrl(key);
+          }
+          if (capture.thumbnailS3Url) {
+            const thumbnailKey = storageService.extractKeyFromUrl(capture.thumbnailS3Url);
+            captureData.thumbnailSignedUrl = await storageService.generateSignedUrl(thumbnailKey);
+          }
+          return captureData;
+        }),
+      );
+
+      res.json({
+        success: true,
+        data: { captures: capturesWithSignedUrls },
+      });
+    } catch (error) {
+      logger.error('Get captures by project or site failed:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to get captures',
+        error: error.message,
+      });
+    }
+  }
 }
 
 module.exports = new CaptureController();

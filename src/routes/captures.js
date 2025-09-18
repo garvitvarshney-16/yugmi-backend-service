@@ -162,6 +162,64 @@ router.get('/',
 );
 
 
+/**
+ * @swagger
+ * /api/captures/by-project-or-site:
+ *   get:
+ *     summary: Get all captures by projectId or siteId
+ *     tags: [Capture Management]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: projectId
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Project ID to fetch all captures for all sites under this project
+ *       - in: query
+ *         name: siteId
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Site ID to fetch all captures for this site
+ *     responses:
+ *       200:
+ *         description: Captures retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/ApiResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         captures:
+ *                           type: array
+ *                           items:
+ *                             allOf:
+ *                               - $ref: '#/components/schemas/Capture'
+ *                               - type: object
+ *                                 properties:
+ *                                   signedUrl:
+ *                                     type: string
+ *                                   thumbnailSignedUrl:
+ *                                     type: string
+ *                                   site:
+ *                                     $ref: '#/components/schemas/Site'
+ *                                   annotations:
+ *                                     type: array
+ *                                     items:
+ *                                       $ref: '#/components/schemas/Annotation'
+ *       400:
+ *         description: Either projectId or siteId must be provided
+ *       404:
+ *         description: No sites found for this project
+ */
+router.get('/by-project-or-site', authenticateToken, captureController.getCapturesByProjectOrSite);
+
 
 /**
  * @swagger
@@ -218,7 +276,49 @@ router.get('/:id',
 );
 
 
+/**
+ * @swagger
+ * /api/captures/analysis:
+ *   post:
+ *     summary: Process AI analysis for a capture
+ *     tags: [Capture Management]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [captureId, mediaUrl, operationType]
+ *             properties:
+ *               captureId:
+ *                 type: string
+ *                 format: uuid
+ *                 description: Capture ID to process AI analysis for
+ *               mediaUrl:
+ *                 type: string
+ *                 description: URL of the media to analyze
+ *               operationType:
+ *                 type: string
+ *                 description: Type of operation (e.g., progress-monitoring, auditing, inspection)
+ *               wbsId:
+ *                 type: string
+ *                 description: Work Breakdown Structure ID (optional)
+ *     responses:
+ *       200:
+ *         description: AI analysis processed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiResponse'
+ *       400:
+ *         description: Validation error
+ *       404:
+ *         description: Capture not found
+ */
 router.post('/analysis', authenticateToken, captureController.processAIAnalysis);
+
 
 
 /**
