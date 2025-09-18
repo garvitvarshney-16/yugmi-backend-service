@@ -28,7 +28,8 @@ app.use(cors({
     'https://yugmi-node-backend-493238193695.us-central1.run.app',
     'http://localhost:8080',
     'http://localhost:3000',
-    'http://192.168.1.10:8080'
+    'http://192.168.1.10:8080',
+    'http://192.168.1.37:8080'
   ],
   credentials: true
 }));
