@@ -543,4 +543,81 @@ router.post('/:id/annotations',
   captureController.addAnnotation
 );
 
+
+/**
+ * @swagger
+ * /api/captures/{id}:
+ *   put:
+ *     summary: Update a capture
+ *     tags: [Capture Management]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Capture ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Capture'
+ *     responses:
+ *       200:
+ *         description: Capture updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/ApiResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         capture:
+ *                           $ref: '#/components/schemas/Capture'
+ *       400:
+ *         description: Validation error
+ *       404:
+ *         description: Capture not found
+ */
+router.put('/:id', authenticateToken, captureController.updateCapture);
+
+/**
+ * @swagger
+ * /api/captures/{id}:
+ *   delete:
+ *     summary: Delete a capture
+ *     tags: [Capture Management]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Capture ID
+ *     responses:
+ *       200:
+ *         description: Capture deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiResponse'
+ *       404:
+ *         description: Capture not found
+ */
+router.delete('/:id', authenticateToken, captureController.deleteCapture);
+
 module.exports = router;
+
+
+
+
