@@ -29,7 +29,8 @@ app.use(cors({
     'http://localhost:8080',
     'http://localhost:3000',
     'http://192.168.1.10:8080',
-    'http://192.168.1.37:8080'
+    'http://192.168.1.37:8080',
+    'https://aec-site-vision.vercel.app/'
   ],
   credentials: true
 }));
