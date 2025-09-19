@@ -493,6 +493,37 @@ class CaptureController {
       });
     }
   }
+
+  async updateCapture(req, res) {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+      const capture = await Capture.findOne({ where: { CaptureId: id, userId: req.user.UserId } });
+      if (!capture) {
+        return res.status(404).json({ success: false, message: 'Capture not found' });
+      }
+      await capture.update(updates);
+      res.json({ success: true, message: 'Capture updated', data: { capture } });
+    } catch (error) {
+      logger.error('Update capture failed:', error);
+      res.status(500).json({ success: false, message: 'Failed to update capture', error: error.message });
+    }
+  }
+
+  async deleteCapture(req, res) {
+    try {
+      const { id } = req.params;
+      const capture = await Capture.findOne({ where: { CaptureId: id, userId: req.user.UserId } });
+      if (!capture) {
+        return res.status(404).json({ success: false, message: 'Capture not found' });
+      }
+      await capture.destroy();
+      res.json({ success: true, message: 'Capture deleted' });
+    } catch (error) {
+      logger.error('Delete capture failed:', error);
+      res.status(500).json({ success: false, message: 'Failed to delete capture', error: error.message });
+    }
+  }
 }
 
 module.exports = new CaptureController();
