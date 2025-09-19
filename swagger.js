@@ -30,6 +30,14 @@ const options = {
         url: 'https://yugmi-node-backend-493238193695.us-central1.run.app',
         description: 'Production server (Cloud network)'
       },
+      {
+        url: 'https://aec-site-vision.vercel.app',
+        description: 'Production server (Vercel network)'
+      },
+      {
+        url: 'https://yugmi-aec.web.app',
+        description: 'PROD (Firebase network)'
+      }
     ],
     components: {
       securitySchemes: {

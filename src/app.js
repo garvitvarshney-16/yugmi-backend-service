@@ -26,11 +26,12 @@ app.use(helmet());
 app.use(cors({
   origin: [
     'https://yugmi-node-backend-493238193695.us-central1.run.app',
+    'https://yugmi-aec.web.app',
+    'https://aec-site-vision.vercel.app',
     'http://localhost:8080',
     'http://localhost:3000',
     'http://192.168.1.10:8080',
     'http://192.168.1.37:8080',
-    'https://aec-site-vision.vercel.app/'
   ],
   credentials: true
 }));
@@ -70,7 +71,7 @@ app.use('/api/captures', captureRoutes);
 // Global error handler
 app.use((err, req, res, next) => {
   logger.error('Unhandled error:', err);
-  
+
   if (err.name === 'ValidationError') {
     return res.status(400).json({
       success: false,
